@@ -2,12 +2,48 @@
 # COS 226 Hash Homework
 # Starts by unloading the CSV file into three lists: titles, quotes, and the movie itself
 
+############################# Imports ##########################
+
+from math import sqrt
+from nlp_functions import syllables
+import time
+
 ############################# Functions ########################
 
-def title_hash():
+def title_hash1(title, maximum):
+    # initial idea: have the key be based off the syllables in the title
+    # for every word, multiply the length by the syllables in it
+    # then, add all of those together and square it
+    # finally, subtract the amount of syllables squared
+    # if the key is too high, square root it
+    # if key is too low, square it
+
+    words = title.split()
+    length = len(words)
+    syls = syllables(title)
+
+    x = []
+
+    for i in range(length):
+        x.append(len(words[i]) * syls[i])
+
+    key = (sum(x) ** 2) - (len(syls) ** 2)
+
+    if key > maximum:
+        key = round(sqrt(key))
+
+    elif key < 0:
+        key = key ** 2
+
+    return key
+
+def title_hash2(title):
     pass
 
-def quote_hash():
+def quote_hash1(quote):
+    pass
+
+def quote_hash2(quote):
     pass
 
 ############################# Code #############################
@@ -32,7 +68,7 @@ with open(path, "r") as f:
     for i in f.readlines():
 
         f_list = i.strip().split(",")
-
+        
         if len(f_list) > length: # if there were commas in the movie title,
             title = ''
             while len(f_list) >= length: # go through until there are no movie title chunks
@@ -55,4 +91,39 @@ with open(path, "r") as f:
 
             movie_index+=1
 
-# print(movies[0])
+
+
+start = time.perf_counter()
+
+linked_list_hash_table_1 = [None for i in range(len(movies))]
+linked_list_hash_table_1_collision_counter = 0
+
+for i in range(len(movies)):
+    hash = title_hash1(titles[i], len(movies))
+
+    collision = True
+    while collision:
+        if linked_list_hash_table_1[hash] == None:
+                collision = False
+        
+        else: # linear probing, if space is full, go to previous until empty
+            if hash == 0:
+                hash = len(linked_list_hash_table_1)
+
+            linked_list_hash_table_1_collision_counter += 1
+            hash -= 1
+
+    linked_list_hash_table_1[hash] = movies[i]
+
+end = time.perf_counter()
+
+filled_counter = 0
+for i in linked_list_hash_table_1:
+    if i != None:
+        filled_counter += 1
+
+print("Linear Probing Hash Table Method 1 Titles")
+print(f"Number of collisions: {linked_list_hash_table_1_collision_counter}")
+print(f"Total space filled: {filled_counter}")
+print(f"Wasted space: {len(linked_list_hash_table_1)-filled_counter}")
+print(f"Construction time: {end-start}")
