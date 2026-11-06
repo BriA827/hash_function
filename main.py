@@ -103,37 +103,41 @@ with open(path, "r") as f:
 
 ### Linear Probing Poor Function ###
 
-# start = time.perf_counter()
+start = time.perf_counter()
 
-# linear_probing_hash_table_1 = [None for i in range(len(movies))]
-# linear_probing_hash_table_1_collision_counter = 0
+linear_probing_hash_table_1 = [None for i in range(len(movies))]
+linear_probing_hash_table_1_collision_counter = 0
 
-# for i in range(len(movies)):
-#     hash = title_hash1(titles[i], len(movies))
+for i in range(len(movies)):
+    hash = title_hash1(titles[i], len(movies))
 
-#     collision = True
-#     while collision:
-#         if linear_probing_hash_table_1[hash] == None:
-#                 collision = False
+    collision = True
+    counter = 0
+    while collision:
+        if linear_probing_hash_table_1[hash] == None:
+                collision = False
         
-#         else: # linear probing, if space is full, go to previous until empty
-#             if hash == 0:
-#                 hash = len(linear_probing_hash_table_1)
+        else: # linear probing, if space is full, go to previous until empty
+            if hash == 0:
+                hash = len(linear_probing_hash_table_1)
+            hash -= 1
 
-#             linear_probing_hash_table_1_collision_counter += 1
-#             hash -= 1
+            counter += 1
 
-#     linear_probing_hash_table_1[hash] = movies[i]
+    if counter > 0:
+        linear_probing_hash_table_1_collision_counter += 1
 
-# end = time.perf_counter()
+    linear_probing_hash_table_1[hash] = movies[i]
 
-# filled_counter = 0
-# for i in linear_probing_hash_table_1:
-#     if i != None:
-#         filled_counter += 1
+end = time.perf_counter()
 
-# print("Linear Probing Hash Table Method 1 Titles")
-# print(f"Number of collisions: {linear_probing_hash_table_1_collision_counter}")
-# print(f"Total space filled: {filled_counter}")
-# print(f"Wasted space: {len(linear_probing_hash_table_1)-filled_counter}")
-# print(f"Construction time: {end-start}")
+filled_counter = 0
+for i in linear_probing_hash_table_1:
+    if i != None:
+        filled_counter += 1
+
+print("Linear Probing Hash Table Method 1 Titles")
+print(f"Number of collisions: {linear_probing_hash_table_1_collision_counter}")
+print(f"Total space filled: {filled_counter}")
+print(f"Wasted space: {len(linear_probing_hash_table_1)-filled_counter}")
+print(f"Construction time: {end-start}")
