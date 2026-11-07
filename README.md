@@ -1,2 +1,8 @@
 # hash_function
 COS 226 Assignment
+
+Without much trying, the poor and good hash functions lived up to their names. This was most noticeable in the difference between 61 million and 40 million for linear probing, but still held true for linked lists. Figuring out how to spread data was challenging, and online reasearch said to make a good function, skip making it at all and use a pre-made one. I really wanted to try improving the already made ones, though, which is why I implemented some elements (prime, mod) and tweaked them for my own results. I would be curious to see if 7 thousand could be lessened for the method three linked list titles, as it already went down 3 thousand just by introducing the two additions.
+
+Reviewing this, it was a fun project to be creative with approaches even if they were outrageously silly. The Bee Movie skewed some data, causing the edits to be made to the hash functions to account for the fact that it would never be divided down enough, so to just set it to the max. I was also surprised that changing from linear probing to linked list cut the construction time down so much from 4-6 seconds to less than a fraction of a second. 
+
+Some ideas I played around with (before stoping for the sake of my laptop) were using the nth digit of pi for a multiplier for a randomness factor, or using some xsin(10x) formula for another sense of pushing the data into non-clumped chunks.
