@@ -5,6 +5,7 @@
 ############################# Imports ##########################
 
 from math import sqrt
+from math import sin
 from nlp_functions import syllables
 import time
 
@@ -18,7 +19,7 @@ def title_hash1(title, maximum):
     # if the key is too high, square root it
     # if key is too low, square it
 
-    # edit for quotes, bee movie is too large, set just to 15000.
+    # edit: for quotes, bee movie is too large, set just to 15000.
 
     words = title.split()
     length = len(words)
@@ -48,7 +49,7 @@ def title_hash2(title, maximum):
     # If too large, floor divife by the number of words plus 8 (to account for one word titles)
     # 8 had the best success rate, which is why it is 8
 
-    # edit bee movie too large, set to 15000
+    # edit: bee movie too large, set to 15000
 
     sum = 0
     for character in title.strip():
@@ -60,6 +61,26 @@ def title_hash2(title, maximum):
         key = key // (len(title.split())+8)
         if key >= maximum:
             key = maximum - 1
+
+    return key
+
+def title_hash3(title, maximum):
+    # Too many unused spaces with previous functions, need more varied results.
+    # Doing research online said using prime number helps vary results
+    # I tried many different prime numbers, but found not much difference,
+    # So I used a non-prime number instead (not much change)
+    # 214 marks this as Bri's work, as it relates to the favorite character Xavier
+    # Changing from division to mod (after experimenting with floor division, too) helped to:
+    # 1. Eliminate the need for double checking if the size was greater than max
+    # 2. Reduce the amount of collisions
+    
+    sum = 0
+    multiplier = 214
+    for character in title.strip():
+        sum = (sum * multiplier) + ord(character)
+
+    key = sum
+    key = key % maximum
 
     return key
 
@@ -113,3 +134,33 @@ with open(path, "r") as f:
                 movies[movie_index][categories[x]] = f_list[x]
 
             movie_index+=1
+
+
+
+### final optimization linked list ### MOVIES
+
+start = time.perf_counter()
+
+linked_list_hash_table_1 = [[] for i in range(len(movies))]
+linked_list_hash_table_1_collision_counter = 0
+
+for i in range(len(movies)):
+    hash = title_hash3(titles[i], len(movies))
+
+    if len(linked_list_hash_table_1[hash])>0:
+        linked_list_hash_table_1_collision_counter += 1
+    
+    linked_list_hash_table_1[hash].append(movies[i])
+
+end = time.perf_counter()
+
+filled_counter = 0
+for i in linked_list_hash_table_1:
+    if len(i) > 0:
+        filled_counter += 1
+
+print("Linear Probing Hash Table Method 3 Titles")
+print(f"Number of collisions: {linked_list_hash_table_1_collision_counter}")
+print(f"Total space filled: {filled_counter}")
+print(f"Wasted space: {len(linked_list_hash_table_1)-filled_counter}")
+print(f"Construction time: {end-start}")
